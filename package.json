@@ -1,0 +1,23 @@
+{
+  "name": "week11-homework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bamazoncustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaraBroad/Week11-homework.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SaraBroad/Week11-homework/issues"
+  },
+  "homepage": "https://github.com/SaraBroad/Week11-homework#readme",
+  "dependencies": {
+    "inquirer": "^5.2.0",
+    "mysql": "^2.15.0"
+  }
+}
