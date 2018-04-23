@@ -48,14 +48,17 @@ inquirer.prompt([{
     message: "How many units of the product would you like to buy?"
 }
 ]).then(function(answers) {
-    checkInv(answers.productID, parseInt(answers.unitNum));
+    checkInv(answers.productID, (answers.unitNum));
 });
 };
 
 function checkInv(productID, quantity) {
-    var query = "SELECT stock_quantity, price FROM products WHERE id = ?";
+    var query = "SELECT stock_quantity, price FROM products WHERE item_id = ?";
+    console.log(productID);
+    console.log(quantity);
     connection.query(query, [productID], function(err, res){
-        if (res[0].stock_quanity >= parseInt(quantity)) {
+        console.log(res[0].stock_quantity);
+        if (res[0].stock_quantity >= parseInt(quantity)) {
             var newQuantity = res[0].stock_quantity - quantity;
             console.log(quantity * res[0].price);
             updateQuantity(productID, newQuantity)
@@ -88,18 +91,3 @@ function playAgain() {
         }
     });
 }
-
-// Once the customer has placed the order, your application should check if your store has 
-// enough of the product to meet the customer's request.
-
-
-
-// If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
-
-
-
-// However, if your store does have enough of the product, you should fulfill the customer's order.
-
-
-// This means updating the SQL database to reflect the remaining quantity.
-// Once the update goes through, show the customer the total cost of their purchase.
