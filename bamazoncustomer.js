@@ -57,7 +57,7 @@ function checkInv(productID, quantity) {
     console.log(productID);
     console.log(quantity);
     connection.query(query, [productID], function(err, res){
-        console.log(res[0].stock_quantity);
+        // console.log(res[0].stock_quantity);
         if (res[0].stock_quantity >= parseInt(quantity)) {
             var newQuantity = res[0].stock_quantity - quantity;
             console.log(quantity * res[0].price);
@@ -72,6 +72,7 @@ function checkInv(productID, quantity) {
 function updateQuantity(productID, newQuantity) {
     var query = "UPDATE products SET stock_quantity = ? WHERE id = ?";
     connection.query(query, [newQuantity, productID], function(err, res) {
+        console.log(newQuantity);
         console.log("Stock quantity has been updated");
         playAgain();
     })
