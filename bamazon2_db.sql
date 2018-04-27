@@ -12,7 +12,7 @@ CREATE TABLE products (
 );
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Manduka ekoLite Yoga Mat", "fitness", 72.99, 10);
+VALUES ("Manduka ekoLite Yoga Mat", "fitness", 72.99, 4);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("FitLifestyleCo Yoga Mat Strap", "fitness", 12.99, 15);

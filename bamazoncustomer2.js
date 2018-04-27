@@ -59,9 +59,52 @@ function displayStore() {
         for (var i = 0; i < res.length; i++) {
             console.log("ID #: " + res[i].item_id + " Product Name: " + res[i].product_name + " Department Name: " + res[i].department_name + " Price: " + res[i].price + " Stock Quantity: " + res[i].stock_quantity);
         }
-        playAgain();
+        custPrompt();
+        // askCust();
     })
 }
+
+
+function custPrompt() {
+    var inquirer = require('inquirer');
+    inquirer.prompt([{
+        type: "input",
+        name: "productID",
+        message: "What is the ID of the product you would like to buy?"
+    },
+    {
+        type: "input",
+        name: "unitNum",
+        message: "How many units of the product would you like to buy?"
+    }
+    ]).then(function(answers) {
+        checkInv(answers.productID, (answers.unitNum));
+    });
+    };
+    
+    function checkInv(productID, quantity) {
+        var query = "SELECT stock_quantity, price FROM products WHERE item_id = ?";
+        console.log("Product ID: " + productID);
+        console.log("Quantity: " + quantity);
+        connection.query(query, [productID], function(err, res){
+            // console.log(res[0].stock_quantity);
+            if (res[0].stock_quantity >= parseInt(quantity)) {
+                var newQuantity = res[0].stock_quantity - quantity;
+                console.log("New quantity: " + newQuantity);
+                var price = quantity * res[0].price;
+                console.log("Total Price: " + price);
+                updateQuantity(productID, newQuantity);
+        
+            } else {
+                console.log("Insufficient quantity");
+                askCust();
+            }
+        })
+    }
+
+
+
+
 
 function updateQuantity(productID, newQuantity) {
     var query = "UPDATE products SET stock_quantity = ? WHERE id = ?";
@@ -111,11 +154,8 @@ function addToInv() {
 
         ]).then(function (answers) {
             var currentQuan = parseInt(answers.currentNum);
-            console.log(currentQuan);
             var addQuan = parseInt(answers.unitNum);
-            console.log(addQuan)
             var newQuantity = currentQuan + addQuan;
-            // console.log(newQuantity);
             connection.query("UPDATE products SET ? WHERE ?",
                 [{
                     stock_quantity: newQuantity
@@ -133,7 +173,13 @@ function addToInv() {
 }
 
 function lowInventory() {
-    console.log("hi")
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+            console.log("This/these item(s) are low on inventory " + "Product name: " + res[i].product_name +  " Stock Quantity: " + res[i].stock_quantity);
+            askCust();
+        }    
+    });
 }
 
 
