@@ -5,11 +5,9 @@ var inquirer = require('inquirer');
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-  
-    // Your username
+
     user: "root",
   
-    // Your password
     password: "Fiction1912",
     database: "bamazon_db"
   });
@@ -20,44 +18,6 @@ var connection = mysql.createConnection({
     displayStore();
     
   });
-  
-
-// Running this application will first display all of the items available for sale. 
-// Include the ids, names, and prices of products for sale.
-
-// function askCust() {
-//     inquirer
-//     .prompt({
-//       name: "action",
-//       type: "list",
-//       message: "What would you like to do?",
-//       choices: [
-//         "View products for sale",
-//         "View Low Inventory",
-//         "Add to Inventory",
-//         "Add new product"
-//       ]
-//     })
-//     .then(function(answer) {
-//         switch(answer.action) {
-//         case "View products for sale":
-//         displayStore();
-//         break;
-
-//         case "View Low Inventory":
-//         artistSearch();
-//         break;
-
-//         case "Add to Inventory":
-//         addInv();
-//         break;
-
-//         case "Find songs by artist":
-//         addNew();
-//         break;
-//         }
-//     });
-// }
 
 function displayStore() {
     connection.query("SELECT * FROM products", function(err, res) {
