@@ -25,6 +25,40 @@ var connection = mysql.createConnection({
 // Running this application will first display all of the items available for sale. 
 // Include the ids, names, and prices of products for sale.
 
+// function askCust() {
+//     inquirer
+//     .prompt({
+//       name: "action",
+//       type: "list",
+//       message: "What would you like to do?",
+//       choices: [
+//         "View products for sale",
+//         "View Low Inventory",
+//         "Add to Inventory",
+//         "Add new product"
+//       ]
+//     })
+//     .then(function(answer) {
+//         switch(answer.action) {
+//         case "View products for sale":
+//         displayStore();
+//         break;
+
+//         case "View Low Inventory":
+//         artistSearch();
+//         break;
+
+//         case "Add to Inventory":
+//         addInv();
+//         break;
+
+//         case "Find songs by artist":
+//         addNew();
+//         break;
+//         }
+//     });
+// }
+
 function displayStore() {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
@@ -54,14 +88,17 @@ inquirer.prompt([{
 
 function checkInv(productID, quantity) {
     var query = "SELECT stock_quantity, price FROM products WHERE item_id = ?";
-    console.log(productID);
-    console.log(quantity);
+    console.log("Product ID: " + productID);
+    console.log("Quantity: " + quantity);
     connection.query(query, [productID], function(err, res){
         // console.log(res[0].stock_quantity);
         if (res[0].stock_quantity >= parseInt(quantity)) {
             var newQuantity = res[0].stock_quantity - quantity;
-            console.log(quantity * res[0].price);
-            updateQuantity(productID, newQuantity)
+            console.log("New quantity: " + newQuantity);
+            var price = quantity * res[0].price;
+            console.log("Total Price: " + price);
+            updateQuantity(productID, newQuantity);
+    
         } else {
             console.log("Insufficient quantity");
             playAgain();
@@ -70,9 +107,8 @@ function checkInv(productID, quantity) {
 }
 
 function updateQuantity(productID, newQuantity) {
-    var query = "UPDATE products SET stock_quantity = ? WHERE id = ?";
+    var query = "UPDATE products SET stock_quantity = ? WHERE item_id = ?";
     connection.query(query, [newQuantity, productID], function(err, res) {
-        console.log(newQuantity);
         console.log("Stock quantity has been updated");
         playAgain();
     })
