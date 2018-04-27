@@ -6,10 +6,8 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
 
-    // Your username
     user: "root",
 
-    // Your password
     password: "Fiction1912",
     database: "bamazon2_db"
 });
@@ -88,43 +86,50 @@ function playAgain() {
     });
 }
 
-// If a manager selects Add to Inventory, your app should display a prompt 
-// that will let the manager "add more" of any item currently in the store.
-
-    //first - display items - what is the id #
-    //second - give user option to select item
-    //third - ask how much they want to add
-    //fourth - add to inv and console.log("You added these items to the stock quantity")
-
-    function displayStore() {
-        connection.query("SELECT * FROM products", function(err, res) {
-            if (err) throw err;
-            for (var i = 0; i < res.length; i++) {
-                console.log("ID #: " + res[i].item_id + " Product Name: " + res[i].product_name + " Department Name: " + res[i].department_name + " Price: " + res[i].price + " Stock Quantity: " + res[i].stock_quantity);
-            }
-        }) 
-    }
 
 function addToInv() {
-    inquirer.prompt([{
-        type: "input",
-        name: "productID",
-        message: "What is the ID of the product you would like to add to?"
-    },
-    {
-        type: "input",
-        name: "unitNum",
-        message: "How many units of the product would you like to add?"
-    }
-    ]).then(function(answers) {
-        console.log("hello")
-        // checkInv(answers.productID, (answers.unitNum));
-    });
-}
+    connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+        for (var i = 0; i < res.length; i++) {
+            console.log("ID #: " + res[i].item_id + " Product Name: " + res[i].product_name + " Department Name: " + res[i].department_name + " Price: " + res[i].price + " Stock Quantity: " + res[i].stock_quantity);
+        }
+        inquirer.prompt([{
+            type: "input",
+            name: "productID",
+            message: "What is the ID of the product you would like to add to?"
+        },
+        {
+            type: "input",
+            name: "currentNum",
+            message: "How many units of the product are there currently in the database?"
+        },
+        {
+            type: "input",
+            name: "unitNum",
+            message: "How many units of the product would you like to add?"
+        }
 
-
-function addFromId(productID, addUnits) {
-
+        ]).then(function (answers) {
+            var currentQuan = parseInt(answers.currentNum);
+            console.log(currentQuan);
+            var addQuan = parseInt(answers.unitNum);
+            console.log(addQuan)
+            var newQuantity = currentQuan + addQuan;
+            // console.log(newQuantity);
+            connection.query("UPDATE products SET ? WHERE ?",
+                [{
+                    stock_quantity: newQuantity
+                },
+                {
+                    item_id: answers.productID
+                }], function (err) {
+                    if (err) throw err;
+                    console.log("Item added to inventory...")
+                    playAgain();
+                }
+            )
+        });
+    })
 }
 
 function lowInventory() {
@@ -157,12 +162,12 @@ function addNewProduct() {
     }
     ]).then(function (answers) {
         connection.query(
-            "INSERT INTO products SET ?",{
-            product_name: answers.addProduct,
-            department_name: answers.addCategory,
-            price: answers.addPrice,
-            stock_quantity: answers.addQuantity
-        },
+            "INSERT INTO products SET ?", {
+                product_name: answers.addProduct,
+                department_name: answers.addCategory,
+                price: answers.addPrice,
+                stock_quantity: answers.addQuantity
+            },
             function (err) {
                 if (err) throw err
                 console.log("Adding product...");
